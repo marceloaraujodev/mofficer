@@ -112,12 +112,14 @@ const cleanProductData = (products) => {
 };
 
 // Function to generate the XML feed from product data
+// Function to generate the XML feed from product data
 const generateXmlFeed = (products) => {
   const feed = {
     rss: {
       $: {
         version: "2.0",
-        xmlns: "http://base.google.com/ns/1.0",
+        xmlns: "http://base.google.com/ns/1.0", // This is the required Google namespace
+        'g': 'http://base.google.com/ns/1.0',  // Declare the 'g' prefix for Google Merchant
       },
       channel: [
         {
@@ -158,6 +160,7 @@ const generateXmlFeed = (products) => {
   const builder = new xml2js.Builder();
   return builder.buildObject(feed);
 };
+
 
 // Function to clean HTML tags from descriptions
 function cleanHtml(rawHtml) {
