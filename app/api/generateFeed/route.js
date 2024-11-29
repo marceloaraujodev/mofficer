@@ -118,14 +118,14 @@ const generateXmlFeed = (products) => {
     rss: {
       $: {
         version: "2.0",
-        xmlns: "http://base.google.com/ns/1.0", // This is the required Google namespace
+        xmlns: "http://base.google.com/ns/1.0", // The Google Merchant namespace
         'g': 'http://base.google.com/ns/1.0',  // Declare the 'g' prefix for Google Merchant
       },
       channel: [
         {
-          title: [`M.Officer`], // Replace with your store's name
-          link: [`https://mofficer.com.br`], // Replace with your store URL, add .br if they have br in it
-          description: ["Your Store Description"], // Replace with your store's description
+          title: [`M.Officer`], // Store name
+          link: [`https://mofficer.com.br`], // Store URL
+          description: ["Your Store Description"], // Store description
           item: products.map((product) => {
             const variants =
               product.variants.length > 0
@@ -146,7 +146,7 @@ const generateXmlFeed = (products) => {
               "g:link": [`https://${shopName}.com/products/${product.handle}`],
               "g:image_link": [product.image ? product.image.src : ""],
               "g:product_type": [product.product_type],
-              "g:price": [`${parseFloat(product.variants[0]?.price).toFixed(2) || "0.00"} BRL`], // Default price for standalone
+              "g:price": [`${parseFloat(product.variants[0]?.price).toFixed(2) || "0.00"} BRL`],
               "g:availability": [product.variants[0]?.inventory_quantity > 0 ? "in stock" : "out of stock"],
               ...(variants.length > 0 ? { "g:variants": variants } : {}),
             };
@@ -156,10 +156,10 @@ const generateXmlFeed = (products) => {
     },
   };
 
-  // Convert JSON object to XML string
   const builder = new xml2js.Builder();
   return builder.buildObject(feed);
 };
+
 
 
 // Function to clean HTML tags from descriptions

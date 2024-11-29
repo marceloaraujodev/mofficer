@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<rss version="2.0" xmlns="http://base.google.com/ns/1.0">
+<rss version="2.0" xmlns="http://base.google.com/ns/1.0" g="http://base.google.com/ns/1.0">
   <channel>
     <title>M.Officer</title>
     <link>https://mofficer.com.br</link>
@@ -883,7 +883,7 @@ Composiçaõ:98% ALGODAO 2% ELASTANO</g:description>
         <g:variant_title>40 / PRETO</g:variant_title>
         <g:variant_price>229.90 BRL</g:variant_price>
         <g:variant_sku>11921302050040</g:variant_sku>
-        <g:variant_inventory_quantity>2</g:variant_inventory_quantity>
+        <g:variant_inventory_quantity>1</g:variant_inventory_quantity>
         <g:variant_availability>in stock</g:variant_availability>
       </g:variants>
     </item>
@@ -1836,7 +1836,7 @@ Dicas de Estilo: Os nossos Jeans são perfeitos para quem quer elegância e comf
 Descrição:Feito com materiais de primeira linha 82%Algodão 16%Poliester 2%Elastano Nossos produtos são produzidos com materiais da melhor qualidade. Peça confortável com modelagem que cai bem no corpo. Tudo pensado nos pequenos detalhes para você!
 Composiçaõ:82% ALGODAO 16% POLIESTER 2% ELASTANO</g:description>
       <g:link>https://mofficerbrasil.com/products/calca-jeans-cool-fit-dark-blue-36</g:link>
-      <g:image_link>https://cdn.shopify.com/s/files/1/0015/4219/3267/files/129201008-966-1.jpg?v=1709231883</g:image_link>
+      <g:image_link>https://cdn.shopify.com/s/files/1/0015/4219/3267/files/129201008966_1.jpg?v=1732890290</g:image_link>
       <g:product_type>CALÇAS JEANS</g:product_type>
       <g:price>239.90 BRL</g:price>
       <g:availability>in stock</g:availability>
@@ -1845,7 +1845,7 @@ Composiçaõ:82% ALGODAO 16% POLIESTER 2% ELASTANO</g:description>
         <g:variant_title>38 / ESCURA</g:variant_title>
         <g:variant_price>239.90 BRL</g:variant_price>
         <g:variant_sku>12920100896638</g:variant_sku>
-        <g:variant_inventory_quantity>1</g:variant_inventory_quantity>
+        <g:variant_inventory_quantity>3</g:variant_inventory_quantity>
         <g:variant_availability>in stock</g:variant_availability>
       </g:variants>
       <g:variants>
@@ -1853,7 +1853,23 @@ Composiçaõ:82% ALGODAO 16% POLIESTER 2% ELASTANO</g:description>
         <g:variant_title>40 / ESCURA</g:variant_title>
         <g:variant_price>239.90 BRL</g:variant_price>
         <g:variant_sku>12920100896640</g:variant_sku>
-        <g:variant_inventory_quantity>1</g:variant_inventory_quantity>
+        <g:variant_inventory_quantity>5</g:variant_inventory_quantity>
+        <g:variant_availability>in stock</g:variant_availability>
+      </g:variants>
+      <g:variants>
+        <g:variant_id>41316036247667</g:variant_id>
+        <g:variant_title>42 / ESCURA</g:variant_title>
+        <g:variant_price>239.90 BRL</g:variant_price>
+        <g:variant_sku>12920100896642</g:variant_sku>
+        <g:variant_inventory_quantity>2</g:variant_inventory_quantity>
+        <g:variant_availability>in stock</g:variant_availability>
+      </g:variants>
+      <g:variants>
+        <g:variant_id>41316036280435</g:variant_id>
+        <g:variant_title>44 / ESCURA</g:variant_title>
+        <g:variant_price>239.90 BRL</g:variant_price>
+        <g:variant_sku>12920100896644</g:variant_sku>
+        <g:variant_inventory_quantity>2</g:variant_inventory_quantity>
         <g:variant_availability>in stock</g:variant_availability>
       </g:variants>
     </item>
@@ -2296,7 +2312,7 @@ Composiçaõ:100% ALGODAO</g:description>
         <g:variant_title>36 / AMACIADO</g:variant_title>
         <g:variant_price>259.90 BRL</g:variant_price>
         <g:variant_sku>119201096154136</g:variant_sku>
-        <g:variant_inventory_quantity>2</g:variant_inventory_quantity>
+        <g:variant_inventory_quantity>1</g:variant_inventory_quantity>
         <g:variant_availability>in stock</g:variant_availability>
       </g:variants>
       <g:variants>
@@ -2416,7 +2432,7 @@ Composiçaõ:85% ALGODAO, 13,5% POLIESTER, 1,5% ELASTANO</g:description>
         <g:variant_title>36 / ESCURA</g:variant_title>
         <g:variant_price>298.90 BRL</g:variant_price>
         <g:variant_sku>11920109596636</g:variant_sku>
-        <g:variant_inventory_quantity>2</g:variant_inventory_quantity>
+        <g:variant_inventory_quantity>3</g:variant_inventory_quantity>
         <g:variant_availability>in stock</g:variant_availability>
       </g:variants>
       <g:variants>
@@ -4186,7 +4202,7 @@ Dicas de Estilo: Os nossos Jeans são perfeitos para quem quer elegância e comf
 Descrição:Feito com materiais de primeira linha 79%algodão 19%poliéster 2%elastano. Nossos produtos são produzidos com materiais da melhor qualidade. Peça confortável com modelagem que cai bem no corpo.Tudo pensado nos pequenos detalhes para você!
 Composiçaõ:79% ALGODAO 19% POLIESTER 2% ELASTANO</g:description>
       <g:link>https://mofficerbrasil.com/products/calca-jeans-super-cool-black-denim-3</g:link>
-      <g:image_link>https://cdn.shopify.com/s/files/1/0015/4219/3267/files/A.032-1-Ref-129201022-CALCAJEANSSUPERCOOLBLACKDENIM.jpg?v=1710957727</g:image_link>
+      <g:image_link>https://cdn.shopify.com/s/files/1/0015/4219/3267/files/129201022998_1.jpg?v=1732891804</g:image_link>
       <g:product_type>CALÇAS JEANS</g:product_type>
       <g:price>239.90 BRL</g:price>
       <g:availability>in stock</g:availability>
@@ -4195,7 +4211,15 @@ Composiçaõ:79% ALGODAO 19% POLIESTER 2% ELASTANO</g:description>
         <g:variant_title>40 / BLACK DENIN</g:variant_title>
         <g:variant_price>239.90 BRL</g:variant_price>
         <g:variant_sku>12920102299840</g:variant_sku>
-        <g:variant_inventory_quantity>1</g:variant_inventory_quantity>
+        <g:variant_inventory_quantity>8</g:variant_inventory_quantity>
+        <g:variant_availability>in stock</g:variant_availability>
+      </g:variants>
+      <g:variants>
+        <g:variant_id>41316039557235</g:variant_id>
+        <g:variant_title>44 / BLACK DENIN</g:variant_title>
+        <g:variant_price>239.90 BRL</g:variant_price>
+        <g:variant_sku>12920102299844</g:variant_sku>
+        <g:variant_inventory_quantity>8</g:variant_inventory_quantity>
         <g:variant_availability>in stock</g:variant_availability>
       </g:variants>
       <g:variants>
@@ -4203,7 +4227,15 @@ Composiçaõ:79% ALGODAO 19% POLIESTER 2% ELASTANO</g:description>
         <g:variant_title>46 / BLACK DENIN</g:variant_title>
         <g:variant_price>239.90 BRL</g:variant_price>
         <g:variant_sku>12920102299846</g:variant_sku>
-        <g:variant_inventory_quantity>1</g:variant_inventory_quantity>
+        <g:variant_inventory_quantity>3</g:variant_inventory_quantity>
+        <g:variant_availability>in stock</g:variant_availability>
+      </g:variants>
+      <g:variants>
+        <g:variant_id>41316039622771</g:variant_id>
+        <g:variant_title>48 / BLACK DENIN</g:variant_title>
+        <g:variant_price>239.90 BRL</g:variant_price>
+        <g:variant_sku>12920102299848</g:variant_sku>
+        <g:variant_inventory_quantity>3</g:variant_inventory_quantity>
         <g:variant_availability>in stock</g:variant_availability>
       </g:variants>
     </item>
@@ -5158,7 +5190,7 @@ Dicas de Estilo: A camisa comfort é perfeita para quem quer elegância e comfor
 Descrição:Feito com materiais de primeira linha 55%Poliester 45%Algodão Peça confortável com modelagem que cai bem no corpo. Tudo pensado nos pequenos detalhes para você!
 Composiçaõ:55% POLIESTER, 45% ALGODAO</g:description>
       <g:link>https://mofficerbrasil.com/products/camisa-comfort-m-l-cloudy</g:link>
-      <g:image_link>https://cdn.shopify.com/s/files/1/0015/4219/3267/files/A.137-REF-129203054.jpg?v=1710957958</g:image_link>
+      <g:image_link>https://cdn.shopify.com/s/files/1/0015/4219/3267/files/1292030542045_2.jpg?v=1732891060</g:image_link>
       <g:product_type>CAMISA</g:product_type>
       <g:price>279.90 BRL</g:price>
       <g:availability>in stock</g:availability>
@@ -5443,7 +5475,7 @@ Dicas de Estilo: A camisa comfort é perfeita para quem quer elegância e comfor
 Descrição:Feito com materiais de primeira linha 100%Algodão Peça confortável com modelagem que cai bem no corpo. Tudo pensado nos pequenos detalhes para você!
 Composiçaõ:100% ALGODAO</g:description>
       <g:link>https://mofficerbrasil.com/products/camisa-comfort-m-l-urban-blue</g:link>
-      <g:image_link>https://cdn.shopify.com/s/files/1/0015/4219/3267/files/129203048-2045-1.jpg?v=1711114306</g:image_link>
+      <g:image_link>https://cdn.shopify.com/s/files/1/0015/4219/3267/files/1292030482045_1.jpg?v=1732892329</g:image_link>
       <g:product_type>CAMISA</g:product_type>
       <g:price>329.90 BRL</g:price>
       <g:availability>in stock</g:availability>
@@ -11852,7 +11884,7 @@ Composiçaõ:100% ALGODAO</g:description>
         <g:variant_title>36 / INTERMEDIARIA</g:variant_title>
         <g:variant_price>229.90 BRL</g:variant_price>
         <g:variant_sku>11920200196536</g:variant_sku>
-        <g:variant_inventory_quantity>1</g:variant_inventory_quantity>
+        <g:variant_inventory_quantity>2</g:variant_inventory_quantity>
         <g:variant_availability>in stock</g:variant_availability>
       </g:variants>
       <g:variants>
