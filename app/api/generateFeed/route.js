@@ -70,7 +70,6 @@ const fetchProducts = async () => {
   }
 };
 
-
 // Function to clean and format product data
 const cleanProductData = (products) => {
   let imgMissing = 0;
@@ -160,24 +159,6 @@ const generateXmlFeed = (products) => {
   return builder.buildObject(feed);
 };
 
-// Main function to fetch products and create the XML file
-const createXmlFeed = async () => {
-  const products = await fetchProducts();
-  if (products.length === 0) {
-    console.log("No products found!");
-    return;
-  }
-
-  // Clean product data
-  const cleanedProducts = cleanProductData(products);
-
-  // Generate the XML string from cleaned product data
-  const xmlFeed = generateXmlFeed(cleanedProducts);
-
-  // Fix the XML data (e.g., handle missing or malformed image links)
-  fixXmlData(xmlFeed);
-};
-
 // Function to clean HTML tags from descriptions
 function cleanHtml(rawHtml) {
   // Remove HTML tags
@@ -193,62 +174,67 @@ function cleanHtml(rawHtml) {
 }
 
 // Function to fix the XML data
-function fixXmlData(xmlData) {
-  // Parse XML string into a JavaScript object
-  xml2js.parseString(xmlData, { trim: true, explicitArray: false }, (err, result) => {
-    if (err) {
-      console.error("Error parsing XML:", err);
-      return;
-    }
-
-    const items = result.rss.channel.item;
+async function fixXmlData(xmlData) {
+  try {
+    const result = await xml2js.parseStringPromise(xmlData, { trim: true, explicitArray: false });
+    const items = result.rss.channel.item || [];
     const missingLinks = [];
 
-    // Iterate over each item and fix issues
-    items.forEach((item, index) => {
-      // Check for missing image link
+    items.forEach((item) => {
       if (!item["g:image_link"] || item["g:image_link"].trim() === "") {
-        // Log missing image link info
         const title = item["g:title"] || "No title";
         const description = item["g:description"] || "No description";
-        missingLinks.push(
-          `Missing or malformed image link in product: ${title}. Description: ${description.substring(0, 50)}`
-        );
+        missingLinks.push(`Missing or malformed image link in product: ${title}. Description: ${description.substring(0, 50)}`);
       }
 
-      // Clean the description HTML if present
       if (item["g:description"]) {
         item["g:description"] = cleanHtml(item["g:description"]);
       }
     });
 
-    // Output log for missing image links
     if (missingLinks.length > 0) {
       fs.appendFileSync("missing_links.log", missingLinks.join("\n") + "\n");
     }
 
-    // Convert the object back to XML
     const builder = new xml2js.Builder();
-    const fixedXmlData = builder.buildObject(result);
-
-    // Output or save the fixed XML data
-    fs.writeFileSync(`${shopName}_shopify_feed.xml`, fixedXmlData);
-    console.log("XML feed created successfully!");
-  });
+    return builder.buildObject(result);
+  } catch (err) {
+    console.error("Error parsing XML:", err);
+    throw err;
+  }
 }
+
+// Main function to fetch products and create the XML file
+const createXmlFeed = async () => {
+  const products = await fetchProducts();
+  if (products.length === 0) {
+    console.log("No products found!");
+    return;
+  }
+
+  // Clean product data
+  const cleanedProducts = cleanProductData(products);
+
+  // Generate the XML string from cleaned product data
+  const xmlFeed = generateXmlFeed(cleanedProducts);
+
+  // Fix the XML data (e.g., handle missing or malformed image links)
+  const fixedData = await fixXmlData(xmlFeed);
+
+  return fixedData
+};
 
 export async function GET() {
   try {
-    const products = await fetchProducts();
-    if (!products.length) {
-      return NextResponse.json({ message: 'No products found!' }, { status: 404 });
+ const feed = await createXmlFeed();
+
+    if (!feed) {
+      // Handle the case where no feed was generated
+      return NextResponse.json({ message: 'No feed generated' }, { status: 404 });
     }
 
-    const cleanedProducts = cleanProductData(products);
-    const xmlFeed = generateXmlFeed(cleanedProducts);
-
     // Return the generated XML feed
-    return new NextResponse(xmlFeed, {
+    return new NextResponse(feed, {
       headers: { 'Content-Type': 'application/xml' },
     });
 
