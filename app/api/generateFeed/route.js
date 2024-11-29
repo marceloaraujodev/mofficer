@@ -49,20 +49,6 @@ const fetchProducts = async () => {
       return product.variants.some((variant) => variant.inventory_quantity > 0);
     });
 
-
-    // const totalVariants = products.reduce((accumulator, product) => {
-    //   return accumulator + product.variants.length;
-    // }, 0);
-    // const totalInStockVariants = inStockProducts.reduce((accumulator, inStockProduct) => {
-    //   return accumulator + inStockProduct.variants.length;
-    // }, 0);
-
-    // console.log("total products:", products.length);
-    // console.log("total variants:", totalVariants); // products to get xml
-    // console.log("total In Stock Products:", inStockProducts.length);
-    // console.log("total inStock variants:", totalInStockVariants); // products to get xml
-
-
     return inStockProducts;
   } catch (error) {
     console.error("Error fetching products:", error.message);
@@ -70,48 +56,6 @@ const fetchProducts = async () => {
   }
 };
 
-// Function to clean and format product data
-const cleanProductData = (products) => {
-  let imgMissing = 0;
-  const cleanProducts = products.filter((product) => {
-
-    // Default image handling
-    if (!product.image?.src || product.status !== 'active') {
-      imgMissing++; // just a counter to see how many images are missing
-      return false
-    }
-
-    // Clean description
-    if (product.body_html) {
-      product.body_html = cleanHtml(product.body_html);
-    }
-
-    // Process variants or handle standalone product
-    if (product.variants.length === 0) {
-      // Assign default variant-like properties for standalone
-      product.variants = [
-        {
-          price: product.price || "0.00",
-          inventory_quantity: product.inventory_quantity || 0,
-          sku: product.sku || "default-sku",
-        },
-      ];
-    } else {
-      product.variants = product.variants.map((variant) => {
-        if (!variant.price) variant.price = "0.00";
-        if (variant.inventory_quantity == null) variant.inventory_quantity = 0;
-        return variant;
-      }).filter((variant) => variant.inventory_quantity > 0)
-    }
-    return true;
-  });
-
-  console.log("Missing Images:", imgMissing);
-  console.log("total number of clean products:", cleanProducts.length);
-  return cleanProducts;
-};
-
-// Function to generate the XML feed from product data
 // Function to generate the XML feed from product data
 const generateXmlFeed = (products) => {
   const feed = {
@@ -159,6 +103,49 @@ const generateXmlFeed = (products) => {
   const builder = new xml2js.Builder();
   return builder.buildObject(feed);
 };
+
+
+// Function to clean and format product data
+const cleanProductData = (products) => {
+  let imgMissing = 0;
+  const cleanProducts = products.filter((product) => {
+
+    // Default image handling
+    if (!product.image?.src || product.status !== 'active') {
+      imgMissing++; // just a counter to see how many images are missing
+      return false
+    }
+
+    // Clean description
+    if (product.body_html) {
+      product.body_html = cleanHtml(product.body_html);
+    }
+
+    // Process variants or handle standalone product
+    if (product.variants.length === 0) {
+      // Assign default variant-like properties for standalone
+      product.variants = [
+        {
+          price: product.price || "0.00",
+          inventory_quantity: product.inventory_quantity || 0,
+          sku: product.sku || "default-sku",
+        },
+      ];
+    } else {
+      product.variants = product.variants.map((variant) => {
+        if (!variant.price) variant.price = "0.00";
+        if (variant.inventory_quantity == null) variant.inventory_quantity = 0;
+        return variant;
+      }).filter((variant) => variant.inventory_quantity > 0)
+    }
+    return true;
+  });
+
+  console.log("Missing Images:", imgMissing);
+  console.log("total number of clean products:", cleanProducts.length);
+  return cleanProducts;
+};
+
 
 
 
