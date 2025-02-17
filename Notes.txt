@@ -1,0 +1,36 @@
+How to run it
+
+Run the route on postman the xml list should be returned in the response.
+copy and paste the response to a xml file if need it.
+
+
+Connect with shopify to dynamically generate the list whenever shopify change products:
+
+Option 1
+  1. Deploy and host this code on vercel or aws or a vps
+  2. Use Shopify fetch Feature 
+    • 
+Option 2
+  if you have access to shoppify admin, you can set up webhooks so that every time a product is added/updated, shopify notifies your script
+
+
+  1. Get Shopify API Access
+
+    • Ask the customer for API credentials (or have them create a Private App in Shopify).
+    • You need access to:
+      read_products
+      write_products (if modifying data)
+
+
+  2. Create a Shopify Webhook
+
+    • In Shopify Admin:
+      • Go to Settings > Notifications.
+      • Scroll down to Webhooks.
+      • Click Create Webhook.
+      • Set Event = "Product update"
+      • Set URL = https://mofficer.vercel.app/api/generateFeed
+      • Set Format = JSON
+    • Now, every time a product changes, Shopify will send data to your API.
+    
+  3. Modify Your API to Receive Data

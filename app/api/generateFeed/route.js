@@ -6,6 +6,8 @@ import { NextResponse } from 'next/server';
 import dotenv from 'dotenv';
 dotenv.config();
 
+// run the route on postman the xml list should be returned in the response
+
 // Shopify API credentials
 const adminApiAccessToken = process.env.MOFFICER_ADMIN_API_ACCESS_TOKEN;
 const shopName = 'mofficerbrasil';
