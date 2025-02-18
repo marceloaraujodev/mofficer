@@ -321,7 +321,7 @@ export async function GET(req) {
     const cleanedProducts = await cleanProductData(products);
 
     // Generate the XML string from cleaned product data
-    const xmlFeed = generateXmlFeed(products);
+    const xmlFeed = generateXmlFeed(cleanedProducts);
 
      // Fix the XML data (e.g., handle missing or malformed image links)
      const fixedData = await fixXmlData(xmlFeed);
