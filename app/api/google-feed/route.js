@@ -17,7 +17,7 @@ function generateIndexFile(totalPages) {
     sitemapindex: {
       $: { xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9" },
       sitemap: Array.from({ length: totalPages }, (_, i) => ({
-        loc: [`https://${shopName}.com/google-feed?page=${i + 1}`],
+        loc: [`https://${shopName}.com.br/api/google-feed?page=${i + 1}`],
       })),
     },
   };
@@ -26,7 +26,6 @@ function generateIndexFile(totalPages) {
 }
 
 export async function GET(request) {
-  
   try {
     // Parse query parameters
     const url = new URL(request.url);
