@@ -13,59 +13,126 @@ const adminApiAccessToken = process.env.MOFFICER_ADMIN_API_ACCESS_TOKEN;
 const shopName = 'mofficerbrasil';
 
 // / Function to fetch products from Shopify API
-const fetchProducts = async () => {
-  let allProducts = [];
-  let url = `https://mofficerbrasil.myshopify.com/admin/api/2024-10/products.json?limit=50`;
-  let hasNextPage = true;
+const fetchProducts = async (cursor = null, limit = 10) => {
+  let url = `https://mofficerbrasil.myshopify.com/admin/api/2024-10/products.json?limit=${limit}`;
+  
+  if (cursor) {
+    url = cursor;
+  }
 
   try {
-    while (hasNextPage) {
-      const response = await axios.get(url, {
-        headers: {
-          "X-Shopify-Access-Token": adminApiAccessToken, // Use the access token for authentication
-        },
-      });
+    const response = await axios.get(url, {
+      headers: {
+        "X-Shopify-Access-Token": adminApiAccessToken,
+      },
+    });
 
-      allProducts = allProducts.concat(response.data.products);
-      // console.log(allProducts)
+    const products = response.data.products || [];
 
-      // check if there is another page
-      const linkHeader = response.headers["link"];
-      if (linkHeader) {
-        const nextPageUrl = linkHeader.match(/<([^>]+)>; rel="next"/);
-        if (nextPageUrl) {
-          url = nextPageUrl[1];
-        } else {
-          hasNextPage = false;
-        }
-      } else {
-        hasNextPage = false;
+    // Find the next page cursor from Shopify's Link header
+    let nextCursor = null;
+    const linkHeader = response.headers["link"];
+    if (linkHeader) {
+      const match = linkHeader.match(/<([^>]+)>; rel="next"/);
+      if (match) {
+        nextCursor = match[1];
       }
     }
 
-    // Ensure `allProducts` is an array
-    if (!Array.isArray(allProducts)) {
-      console.error("Invalid products response", allProducts);
-      return [];
-    }
-
-    // Filter out products without a valid image URL
-    const validProducts = allProducts.filter(product => product.image?.src);
-
-    // Filter products to include only those with at least one in-stock variant
-    const inStockProducts = validProducts.filter(product =>
-      product.variants.some(variant => variant.inventory_quantity > 0)
-    );
-
-    return inStockProducts;
+    return { products, nextCursor };
   } catch (error) {
     console.error("Error fetching products:", error.message);
-    return [];
+    return { products: [], nextCursor: null };
   }
 };
 
-// Function to generate the XML feed from product data
 const generateXmlFeed = (products) => {
+  const feed = {
+    rss: {
+      $: {
+        version: "2.0",
+        "xmlns:g": "http://base.google.com/ns/1.0",
+      },
+      channel: [
+        {
+          title: ["M.Officer"],
+          link: ["https://mofficer.com.br"],
+          description: ["M.Officer"],
+          item: products.map((product) => ({
+            "g:id": [product.id],
+            "g:title": [product.title],
+            "g:description": [product.body_html || 'No Description available'],
+            "g:link": [`https://${shopName}.com/products/${product.handle}`],
+            "g:image_link": [product.image?.src || ""],
+            "g:product_type": [product.product_type],
+            "g:condition": ["new"],
+            "g:price": [`${parseFloat(product.variants[0]?.price || "0.00").toFixed(2)} BRL`],
+            "g:availability": [product.variants[0]?.inventory_quantity > 0 ? "in stock" : "out of stock"],
+          })),
+        },
+      ],
+    },
+  };
+
+  const builder = new xml2js.Builder();
+  return builder.buildObject(feed);
+};
+
+// // fetch all products at once not recommended for production use
+// const fetchProductsAllProducts = async () => {
+//   let allProducts = [];
+//   let url = `https://mofficerbrasil.myshopify.com/admin/api/2024-10/products.json?limit=50`;
+//   let hasNextPage = true;
+
+//   try {
+//     while (hasNextPage) {
+//       const response = await axios.get(url, {
+//         headers: {
+//           "X-Shopify-Access-Token": adminApiAccessToken, // Use the access token for authentication
+//         },
+//       });
+
+//       allProducts = allProducts.concat(response.data.products);
+//       // console.log(allProducts)
+
+//       // check if there is another page
+//       const linkHeader = response.headers["link"];
+//       if (linkHeader) {
+//         const nextPageUrl = linkHeader.match(/<([^>]+)>; rel="next"/);
+//         if (nextPageUrl) {
+//           url = nextPageUrl[1];
+//         } else {
+//           hasNextPage = false;
+//         }
+//       } else {
+//         hasNextPage = false;
+//       }
+//     }
+
+//     // Ensure `allProducts` is an array
+//     if (!Array.isArray(allProducts)) {
+//       console.error("Invalid products response", allProducts);
+//       return [];
+//     }
+
+//     // Filter out products without a valid image URL
+//     const validProducts = allProducts.filter(product => product.image?.src);
+
+//     // Filter products to include only those with at least one in-stock variant
+//     const inStockProducts = validProducts.filter(product =>
+//       product.variants.some(variant => variant.inventory_quantity > 0)
+//     );
+
+//     return inStockProducts;
+//   } catch (error) {
+//     console.error("Error fetching products:", error.message);
+//     return [];
+//   }
+// };
+
+
+// Function to generate the XML feed from product data. not recommended for production use
+const generateXmlFeedForAllProducts = (products) => {
   const feed = {
     rss: {
       $: {
@@ -113,9 +180,6 @@ const generateXmlFeed = (products) => {
   return builder.buildObject(feed);
 };
 
-
-
-
 const cleanProductData = async (products) => {
   const cleanedProducts = await Promise.all(products.map(async (product) => {
     // Processing logic for each product
@@ -153,8 +217,6 @@ const cleanProductData = async (products) => {
   // Filter out the null values after async processing
   return cleanedProducts.filter(product => product !== null);
 };
-
-
 
 // Function to clean HTML tags from descriptions
 function cleanHtml(rawHtml) {
@@ -221,27 +283,60 @@ const createXmlFeed = async () => {
   return fixedData
 };
 
-export async function GET() {
-  try {
- const feed = await createXmlFeed();
+// // for the entire list not recommended for production
+// export async function GET() {
+//   try {
+//  const feed = await createXmlFeed();
 
-    if (!feed) {
-      // Handle the case where no feed was generated
-      return NextResponse.json({ message: 'No feed generated' }, { status: 404 });
+//     if (!feed) {
+//       // Handle the case where no feed was generated
+//       return NextResponse.json({ message: 'No feed generated' }, { status: 404 });
+//     }
+
+//     // Return the generated XML feed
+//     return new NextResponse(feed, {
+//       headers: { 'Content-Type': 'application/xml' },
+//     });
+
+//   } catch (error) {
+//     console.error('Error generating feed:', error);
+//     return NextResponse.json({ message: 'Error generating feed' }, { status: 500 });
+//   }
+// }
+
+// GET request handler with pagination
+export async function GET(req) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const cursor = searchParams.get("cursor") || null;
+    const limit = 10; // Fetch 10 products per request
+
+    const { products, nextCursor } = await fetchProducts(cursor, limit);
+
+    if (products.length === 0) {
+      return NextResponse.json({ message: "No products found" }, { status: 404 });
     }
 
-    // Return the generated XML feed
-    return new NextResponse(feed, {
-      headers: { 'Content-Type': 'application/xml' },
-    });
+    // Clean product data
+    const cleanedProducts = await cleanProductData(products);
 
+    // Generate the XML string from cleaned product data
+    const xmlFeed = generateXmlFeed(products);
+
+     // Fix the XML data (e.g., handle missing or malformed image links)
+     const fixedData = await fixXmlData(xmlFeed);
+
+    return new NextResponse(fixedData, {
+      headers: {
+        "Content-Type": "application/xml",
+        "X-Next-Cursor": nextCursor || "", // Include cursor for pagination
+      },
+    });
   } catch (error) {
-    console.error('Error generating feed:', error);
-    return NextResponse.json({ message: 'Error generating feed' }, { status: 500 });
+    console.error("Error generating feed:", error);
+    return NextResponse.json({ message: "Error generating feed" }, { status: 500 });
   }
 }
-
-
 
 // //  old one Function to clean and format product data
 // const cleanProductData = (products) => {

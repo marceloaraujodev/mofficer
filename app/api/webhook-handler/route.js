@@ -3,10 +3,13 @@ import axios from "axios";
 
 // registered address address: 'https://mofficer.vercel.app/api/webhook-handler',
 
+// when this route is reached it will call the generateFeed which responds with xml list
+// 
+
 export async function POST(req) {
 
   try {
-    // Read the incoming webhook payload
+    // // Read the incoming webhook payload
     const body = await req.json();
     console.log("Webhook received:", body);
 
