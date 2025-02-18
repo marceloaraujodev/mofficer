@@ -34,3 +34,6 @@ Option 2
     • Now, every time a product changes, Shopify will send data to your API.
     
   3. Modify Your API to Receive Data
+
+documentation for fields
+https://support.google.com/merchants/answer/7052112?visit_id=1-636524059048882077-3567403475&rd=1)&sjid=15699427222017152501-SA documentation url

@@ -6,170 +6,14 @@ import { NextResponse } from 'next/server';
 import dotenv from 'dotenv';
 dotenv.config();
 
+
+
+
 // run the route on postman the xml list should be returned in the response
 
 // Shopify API credentials
 const adminApiAccessToken = process.env.MOFFICER_ADMIN_API_ACCESS_TOKEN;
 const shopName = 'mofficerbrasil';
-
-// // / Function to fetch products from Shopify API
-// const fetchProducts = async () => {
-//   let allProducts = [];
-//   let url = `https://mofficerbrasil.myshopify.com/admin/api/2024-10/products.json?limit=50`;
-//   let hasNextPage = true;
-
-//   try {
-//     while (hasNextPage) {
-//       const response = await axios.get(url, {
-//         headers: {
-//           "X-Shopify-Access-Token": adminApiAccessToken, // Use the access token for authentication
-//         },
-//       });
-
-//       allProducts = allProducts.concat(response.data.products);
-//       // console.log(allProducts)
-
-//       // check if there is another page
-//       const linkHeader = response.headers["link"];
-//       if (linkHeader) {
-//         const nextPageUrl = linkHeader.match(/<([^>]+)>; rel="next"/);
-//         if (nextPageUrl) {
-//           url = nextPageUrl[1];
-//         } else {
-//           hasNextPage = false;
-//         }
-//       } else {
-//         hasNextPage = false;
-//       }
-//     }
-
-//     // Ensure `allProducts` is an array
-//     if (!Array.isArray(allProducts)) {
-//       console.error("Invalid products response", allProducts);
-//       return [];
-//     }
-
-//     // Filter out products without a valid image URL
-//     const validProducts = allProducts.filter(product => product.image?.src);
-
-//     // Filter products to include only those with at least one in-stock variant
-//     const inStockProducts = validProducts.filter(product =>
-//       product.variants.some(variant => variant.inventory_quantity > 0)
-//     );
-
-//     return inStockProducts;
-//   } catch (error) {
-//     console.error("Error fetching products:", error.message);
-//     return [];
-//   }
-// };
-
-// Function to generate the XML feed from product data
-// const generateXmlFeed = (products) => {
-//   const feed = {
-//     rss: {
-//       $: {
-//         version: "2.0",
-//         "xmlns:g": "http://base.google.com/ns/1.0",
-//       },
-//       channel: [
-//         {
-//           title: [`M.Officer`], // Replace with your store's name
-//           link: [`https://mofficer.com.br`], // Replace with your store URL, add .br if they have br in it
-//           description: ["M.Officer"], // Replace with your store's description
-//           item: products.map((product) => {
-//             const variants =
-//               product.variants.length > 0
-//                 ? product.variants.map((variant) => ({
-//                     "g:variant_id": [variant.id],
-//                     "g:variant_title": [variant.title],
-//                     "g:variant_price": [`${parseFloat(variant.price).toFixed(2)} BRL`],
-//                     "g:variant_sku": [variant.sku],
-//                     "g:variant_inventory_quantity": [variant.inventory_quantity],
-//                     "g:variant_availability": [variant.inventory_quantity > 0 ? "in stock" : "out of stock"],
-//                   }))
-//                 : [];
-
-//             return {
-//               "g:id": [product.id],
-//               "g:title": [product.title],
-//               "g:description": [product.body_html || 'No Description available'],
-//               "g:link": [`https://${shopName}.com/products/${product.handle}`],
-//               "g:image_link": [product.image ? product.image.src : ""],
-//               "g:product_type": [product.product_type],
-//               "g:condition": ["new"],
-//               "g:price": [`${parseFloat(product.variants[0]?.price).toFixed(2) || "0.00"} BRL`], // Default price for standalone
-//               "g:availability": [product.variants[0]?.inventory_quantity > 0 ? "in stock" : "out of stock"],
-//               ...(variants.length > 0 ? { "g:variants": variants } : {}),
-//             };
-//           }),
-//         },
-//       ],
-//     },
-//   };
-
-//   // Convert JSON object to XML string
-//   const builder = new xml2js.Builder();
-//   return builder.buildObject(feed);
-// };
-
-// // Main function to fetch products and create the XML file
-// const createXmlFeed = async () => {
-//   const products = await fetchProducts();
-//   if (products.length === 0) {
-//     console.log("No products found!");
-//     return;
-//   }
-
-//   // Clean product data
-//   const cleanedProducts = await cleanProductData(products);
-
-//   // Generate the XML string from cleaned product data
-//   const xmlFeed = generateXmlFeed(cleanedProducts);
-
-//   // Fix the XML data (e.g., handle missing or malformed image links)
-//   const fixedData = await fixXmlData(xmlFeed);
-
-//   return fixedData
-// };
-
-// const cleanProductData = async (products) => {
-//   const cleanedProducts = await Promise.all(products.map(async (product) => {
-//     // Processing logic for each product
-//     if (!product.image?.src || product.status !== 'active') {
-//       return null;
-//     }
-
-//     if (product.body_html) {
-//       product.body_html = cleanHtml(product.body_html);
-//     }
-
-//     product.variants = await Promise.all(
-//       product.variants.map(async (variant) => {
-//         // Processing for each variant asynchronously
-
-//         // Exclude variants without a price (Google requires it)
-//         if (!variant.price) return null;
-
-//         // Exclude variants with inventory_quantity of 0 or undefined/null
-//         if (!variant.inventory_quantity || variant.inventory_quantity === 0) return null;
-
-//         return variant;
-//       })
-//     );
-
-//     // Remove null variants (those without a price)
-//     product.variants = product.variants.filter(variant => variant !== null);
-
-//     // If no valid variants exist, exclude the entire product
-//     if (product.variants.length === 0) return null;
-
-//     return product;
-//   }));
-
-//   // Filter out the null values after async processing
-//   return cleanedProducts.filter(product => product !== null);
-// };
 
 const cleanProductData = (products) => {
   return products
@@ -352,15 +196,6 @@ const generateXmlFeed = (products, currentPage, totalPages) => {
               ...(variants.length > 0 ? { "g:variants": variants } : {}),
             };
           }),
-          // Pagination metadata
-          "g:pagination": [
-            {
-              "g:current_page": [currentPage],
-              "g:total_pages": [totalPages],
-              "g:next_page_link": [currentPage < totalPages ? `https://mofficer.vercel.app/api/generateFeed?page=${currentPage + 1}` : ""],
-              "g:prev_page_link": [currentPage > 1 ? `https://mofficer.vercel.app/api/generateFeed?page=${currentPage - 1}` : ""],
-            },
-          ],
         },
       ],
     },
@@ -383,19 +218,25 @@ export async function GET(request) {
       return NextResponse.json({ message: 'No products found' }, { status: 404 });
     }
 
+    // Generate the XML feed with pagination metadata
+    const xmlFeed = generateXmlFeed(products, page, totalPages);
+    // Fix the XML data
+    const fixedData = await fixXmlData(xmlFeed);
+
     // Calculate total pages (assuming you know the total number of products)
     const totalProducts = await getTotalProductCount();
     const totalPages = Math.ceil(totalProducts / limit);
 
-    // Generate the XML feed with pagination metadata
-    const xmlFeed = generateXmlFeed(products, page, totalPages);
+      // Set the appropriate filename:
+      const filename = `products_${page}.xml`;
 
-    // Fix the XML data
-    const fixedData = await fixXmlData(xmlFeed);
 
     // Return the generated XML feed
     return new NextResponse(fixedData, {
-      headers: { 'Content-Type': 'application/xml' },
+      headers: { 
+        'Content-Type': 'application/xml',
+        'Content-Disposition': `attachment; filename="${filename}"` 
+      },
     });
   } catch (error) {
     console.error('Error generating feed:', error);
@@ -417,6 +258,167 @@ const getTotalProductCount = async () => {
     return 0;
   }
 };
+
+
+
+// // / Function to fetch products from Shopify API
+// const fetchProducts = async () => {
+//   let allProducts = [];
+//   let url = `https://mofficerbrasil.myshopify.com/admin/api/2024-10/products.json?limit=50`;
+//   let hasNextPage = true;
+
+//   try {
+//     while (hasNextPage) {
+//       const response = await axios.get(url, {
+//         headers: {
+//           "X-Shopify-Access-Token": adminApiAccessToken, // Use the access token for authentication
+//         },
+//       });
+
+//       allProducts = allProducts.concat(response.data.products);
+//       // console.log(allProducts)
+
+//       // check if there is another page
+//       const linkHeader = response.headers["link"];
+//       if (linkHeader) {
+//         const nextPageUrl = linkHeader.match(/<([^>]+)>; rel="next"/);
+//         if (nextPageUrl) {
+//           url = nextPageUrl[1];
+//         } else {
+//           hasNextPage = false;
+//         }
+//       } else {
+//         hasNextPage = false;
+//       }
+//     }
+
+//     // Ensure `allProducts` is an array
+//     if (!Array.isArray(allProducts)) {
+//       console.error("Invalid products response", allProducts);
+//       return [];
+//     }
+
+//     // Filter out products without a valid image URL
+//     const validProducts = allProducts.filter(product => product.image?.src);
+
+//     // Filter products to include only those with at least one in-stock variant
+//     const inStockProducts = validProducts.filter(product =>
+//       product.variants.some(variant => variant.inventory_quantity > 0)
+//     );
+
+//     return inStockProducts;
+//   } catch (error) {
+//     console.error("Error fetching products:", error.message);
+//     return [];
+//   }
+// };
+
+// // Function to generate the XML feed from product data
+// const generateXmlFeed = (products) => {
+//   const feed = {
+//     rss: {
+//       $: {
+//         version: "2.0",
+//         "xmlns:g": "http://base.google.com/ns/1.0",
+//       },
+//       channel: [
+//         {
+//           title: [`M.Officer`], // Replace with your store's name
+//           link: [`https://mofficer.com.br`], // Replace with your store URL, add .br if they have br in it
+//           description: ["M.Officer"], // Replace with your store's description
+//           item: products.map((product) => {
+//             const variants =
+//               product.variants.length > 0
+//                 ? product.variants.map((variant) => ({
+//                     "g:variant_id": [variant.id],
+//                     "g:variant_title": [variant.title],
+//                     "g:variant_price": [`${parseFloat(variant.price).toFixed(2)} BRL`],
+//                     "g:variant_sku": [variant.sku],
+//                     "g:variant_inventory_quantity": [variant.inventory_quantity],
+//                     "g:variant_availability": [variant.inventory_quantity > 0 ? "in stock" : "out of stock"],
+//                   }))
+//                 : [];
+
+//             return {
+//               "g:id": [product.id],
+//               "g:title": [product.title],
+//               "g:description": [product.body_html || 'No Description available'],
+//               "g:link": [`https://${shopName}.com/products/${product.handle}`],
+//               "g:image_link": [product.image ? product.image.src : ""],
+//               "g:product_type": [product.product_type],
+//               "g:condition": ["new"],
+//               "g:price": [`${parseFloat(product.variants[0]?.price).toFixed(2) || "0.00"} BRL`], // Default price for standalone
+//               "g:availability": [product.variants[0]?.inventory_quantity > 0 ? "in stock" : "out of stock"],
+//               ...(variants.length > 0 ? { "g:variants": variants } : {}),
+//             };
+//           }),
+//         },
+//       ],
+//     },
+//   };
+
+//   // Convert JSON object to XML string
+//   const builder = new xml2js.Builder();
+//   return builder.buildObject(feed);
+// };
+
+// // Main function to fetch products and create the XML file
+// const createXmlFeed = async () => {
+//   const products = await fetchProducts();
+//   if (products.length === 0) {
+//     console.log("No products found!");
+//     return;
+//   }
+
+//   // Clean product data
+//   const cleanedProducts = await cleanProductData(products);
+
+//   // Generate the XML string from cleaned product data
+//   const xmlFeed = generateXmlFeed(cleanedProducts);
+
+//   // Fix the XML data (e.g., handle missing or malformed image links)
+//   const fixedData = await fixXmlData(xmlFeed);
+
+//   return fixedData
+// };
+
+// const cleanProductData = async (products) => {
+//   const cleanedProducts = await Promise.all(products.map(async (product) => {
+//     // Processing logic for each product
+//     if (!product.image?.src || product.status !== 'active') {
+//       return null;
+//     }
+
+//     if (product.body_html) {
+//       product.body_html = cleanHtml(product.body_html);
+//     }
+
+//     product.variants = await Promise.all(
+//       product.variants.map(async (variant) => {
+//         // Processing for each variant asynchronously
+
+//         // Exclude variants without a price (Google requires it)
+//         if (!variant.price) return null;
+
+//         // Exclude variants with inventory_quantity of 0 or undefined/null
+//         if (!variant.inventory_quantity || variant.inventory_quantity === 0) return null;
+
+//         return variant;
+//       })
+//     );
+
+//     // Remove null variants (those without a price)
+//     product.variants = product.variants.filter(variant => variant !== null);
+
+//     // If no valid variants exist, exclude the entire product
+//     if (product.variants.length === 0) return null;
+
+//     return product;
+//   }));
+
+//   // Filter out the null values after async processing
+//   return cleanedProducts.filter(product => product !== null);
+// };
 
 
 // export async function GET() {
