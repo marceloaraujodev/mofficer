@@ -132,53 +132,53 @@ const generateXmlFeed = (products) => {
 
 
 // Function to generate the XML feed from product data. not recommended for production use
-const generateXmlFeedForAllProducts = (products) => {
-  const feed = {
-    rss: {
-      $: {
-        version: "2.0",
-        "xmlns:g": "http://base.google.com/ns/1.0",
-      },
-      channel: [
-        {
-          title: [`M.Officer`], // Replace with your store's name
-          link: [`https://mofficer.com.br`], // Replace with your store URL, add .br if they have br in it
-          description: ["M.Officer"], // Replace with your store's description
-          item: products.map((product) => {
-            const variants =
-              product.variants.length > 0
-                ? product.variants.map((variant) => ({
-                    "g:variant_id": [variant.id],
-                    "g:variant_title": [variant.title],
-                    "g:variant_price": [`${parseFloat(variant.price).toFixed(2)} BRL`],
-                    "g:variant_sku": [variant.sku],
-                    "g:variant_inventory_quantity": [variant.inventory_quantity],
-                    "g:variant_availability": [variant.inventory_quantity > 0 ? "in stock" : "out of stock"],
-                  }))
-                : [];
+// const generateXmlFeedForAllProducts = (products) => {
+//   const feed = {
+//     rss: {
+//       $: {
+//         version: "2.0",
+//         "xmlns:g": "http://base.google.com/ns/1.0",
+//       },
+//       channel: [
+//         {
+//           title: [`M.Officer`], // Replace with your store's name
+//           link: [`https://mofficer.com.br`], // Replace with your store URL, add .br if they have br in it
+//           description: ["M.Officer"], // Replace with your store's description
+//           item: products.map((product) => {
+//             const variants =
+//               product.variants.length > 0
+//                 ? product.variants.map((variant) => ({
+//                     "g:variant_id": [variant.id],
+//                     "g:variant_title": [variant.title],
+//                     "g:variant_price": [`${parseFloat(variant.price).toFixed(2)} BRL`],
+//                     "g:variant_sku": [variant.sku],
+//                     "g:variant_inventory_quantity": [variant.inventory_quantity],
+//                     "g:variant_availability": [variant.inventory_quantity > 0 ? "in stock" : "out of stock"],
+//                   }))
+//                 : [];
 
-            return {
-              "g:id": [product.id],
-              "g:title": [product.title],
-              "g:description": [product.body_html || 'No Description available'],
-              "g:link": [`https://${shopName}.com/products/${product.handle}`],
-              "g:image_link": [product.image ? product.image.src : ""],
-              "g:product_type": [product.product_type],
-              "g:condition": ["new"],
-              "g:price": [`${parseFloat(product.variants[0]?.price).toFixed(2) || "0.00"} BRL`], // Default price for standalone
-              "g:availability": [product.variants[0]?.inventory_quantity > 0 ? "in stock" : "out of stock"],
-              ...(variants.length > 0 ? { "g:variants": variants } : {}),
-            };
-          }),
-        },
-      ],
-    },
-  };
+//             return {
+//               "g:id": [product.id],
+//               "g:title": [product.title],
+//               "g:description": [product.body_html || 'No Description available'],
+//               "g:link": [`https://${shopName}.com/products/${product.handle}`],
+//               "g:image_link": [product.image ? product.image.src : ""],
+//               "g:product_type": [product.product_type],
+//               "g:condition": ["new"],
+//               "g:price": [`${parseFloat(product.variants[0]?.price).toFixed(2) || "0.00"} BRL`], // Default price for standalone
+//               "g:availability": [product.variants[0]?.inventory_quantity > 0 ? "in stock" : "out of stock"],
+//               ...(variants.length > 0 ? { "g:variants": variants } : {}),
+//             };
+//           }),
+//         },
+//       ],
+//     },
+//   };
 
-  // Convert JSON object to XML string
-  const builder = new xml2js.Builder();
-  return builder.buildObject(feed);
-};
+//   // Convert JSON object to XML string
+//   const builder = new xml2js.Builder();
+//   return builder.buildObject(feed);
+// };
 
 const cleanProductData = async (products) => {
   const cleanedProducts = await Promise.all(products.map(async (product) => {
@@ -264,13 +264,7 @@ async function fixXmlData(xmlData) {
 }
 
 // Main function to fetch products and create the XML file
-const createXmlFeed = async () => {
-  const products = await fetchProducts();
-  if (products.length === 0) {
-    console.log("No products found!");
-    return;
-  }
-
+const createXmlFeed = async (products) => {
   // Clean product data
   const cleanedProducts = await cleanProductData(products);
 
@@ -283,7 +277,34 @@ const createXmlFeed = async () => {
   return fixedData
 };
 
-// // for the entire list not recommended for production
+
+// GET request handler with pagination
+export async function GET(req) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const cursor = searchParams.get("cursor") || null;
+    const limit = 10; // Fetch 10 products per request
+
+    const { products, nextCursor } = await fetchProducts(cursor, limit);
+
+    if (products.length === 0) {
+      return NextResponse.json({ message: "No products found" }, { status: 404 });
+    }
+
+    const xmlFeed = createXmlFeed(products);
+
+    return new NextResponse(xmlFeed, {
+      headers: {
+        "Content-Type": "application/xml",
+        "X-Next-Cursor": nextCursor || "", // Include cursor for pagination
+      },
+    });
+  } catch (error) {
+    console.error("Error generating feed:", error);
+    return NextResponse.json({ message: "Error generating feed" }, { status: 500 });
+  }
+}
+
 // export async function GET() {
 //   try {
 //  const feed = await createXmlFeed();
@@ -304,39 +325,7 @@ const createXmlFeed = async () => {
 //   }
 // }
 
-// GET request handler with pagination
-export async function GET(req) {
-  try {
-    const { searchParams } = new URL(req.url);
-    const cursor = searchParams.get("cursor") || null;
-    const limit = 10; // Fetch 10 products per request
 
-    const { products, nextCursor } = await fetchProducts(cursor, limit);
-
-    if (products.length === 0) {
-      return NextResponse.json({ message: "No products found" }, { status: 404 });
-    }
-
-    // Clean product data
-    const cleanedProducts = await cleanProductData(products);
-
-    // Generate the XML string from cleaned product data
-    const xmlFeed = generateXmlFeed(cleanedProducts);
-
-     // Fix the XML data (e.g., handle missing or malformed image links)
-     const fixedData = await fixXmlData(xmlFeed);
-
-    return new NextResponse(fixedData, {
-      headers: {
-        "Content-Type": "application/xml",
-        "X-Next-Cursor": nextCursor || "", // Include cursor for pagination
-      },
-    });
-  } catch (error) {
-    console.error("Error generating feed:", error);
-    return NextResponse.json({ message: "Error generating feed" }, { status: 500 });
-  }
-}
 
 // //  old one Function to clean and format product data
 // const cleanProductData = (products) => {
