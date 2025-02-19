@@ -39,3 +39,24 @@ export function test(){
   console.log(process.env.MOFFICER_ADMIN_API_ACCESS_TOKEN)
   registerWebhook();
 }
+
+const getRegisteredWebhooks = async () => {
+  try {
+    const response = await axios.get(
+      `https://${shop}.myshopify.com/admin/api/2024-10/webhooks.json`,
+      {
+        headers: {
+          "X-Shopify-Access-Token": accessToken,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log("Registered Webhooks:", response.data);
+  } catch (error) {
+    console.error("Error fetching webhooks:", error.response?.data || error.message);
+  }
+};
+
+// Call this function to check registered webhooks
+getRegisteredWebhooks();
