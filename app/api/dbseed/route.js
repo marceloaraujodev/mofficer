@@ -4,7 +4,8 @@ import axios from "axios";
 import { mongooseConnect } from "@/app/lib/mongooseConnect";
 import Product from "@/app/model/product";
 
-// Your fetchProducts function here (or import it if defined in a helper file)
+// This should be ran to load db on first connection.
+
 const fetchProducts = async (limit = 250) => {
   let allProducts = [];
   let url = `https://mofficerbrasil.myshopify.com/admin/api/2024-10/products.json?limit=${limit}`;
@@ -55,6 +56,12 @@ const fetchProducts = async (limit = 250) => {
           imageLink: product.image?.src,
           sku: +product.variants[0]?.sku || "",
           productType: product.product_type || "",
+          variants: product.variants.map(variant => ({
+            id: +variant.id,
+            sku: +variant.sku || "",
+            price: +variant.price || 0.00,
+            inventory_quantity: +variant.inventory_quantity || 0, // Ensure numeric inventory count
+          }))
         };
         await Product.findOneAndUpdate(
           { id: product.id },
@@ -78,8 +85,6 @@ const fetchProducts = async (limit = 250) => {
 
 export async function GET() {
   await mongooseConnect();
-  const products = await fetchProducts();
-
   // return NextResponse.json({products})
   return fetchProducts();
 }
