@@ -10,7 +10,7 @@ const fetchProducts = async (limit = 250) => {
   let allProducts = [];
   let url = `https://mofficerbrasil.myshopify.com/admin/api/2024-10/products.json?limit=${limit}`;
   let hasNextPage = true;
-  
+
   try {
     while (hasNextPage) {
       const response = await axios.get(url, {
@@ -41,8 +41,29 @@ const fetchProducts = async (limit = 250) => {
     const inStockProducts = validProducts.filter(product =>
       product.variants.some(variant => variant.inventory_quantity > 0)
     );
+
+    const productsWithInStockVariants = inStockProducts.map((product) => ({
+      ...product,
+      variants: product.variants.filter(
+        (variant) => variant.inventory_quantity > 0
+      ),
+    }));
     
-    // Save each product to the database (upsert each document)
+    // Debugging: Log the filtered products and their variants
+    console.log(
+      "Filtered Products with In-Stock Variants:",
+      JSON.stringify(productsWithInStockVariants, null, 2)
+    );
+    
+    // Calculate the total number of variants available for sale
+    const totalVariantsForSale = productsWithInStockVariants.reduce(
+      (total, product) => total + product.variants.length,
+      0
+    );
+    
+    console.log("Total Variants for Sale: ", totalVariantsForSale);
+    
+    // // Save each product to the database (upsert each document)
     for (const product of inStockProducts) {
       try {
         const newProduct = {
@@ -74,9 +95,13 @@ const fetchProducts = async (limit = 250) => {
         return NextResponse.json({ error})
       }
     }
-    
-    return NextResponse.json({ message: "Initial upload complete", count: inStockProducts.length });
-    
+
+    return NextResponse.json({ 
+      message: "Initial upload complete",
+      totalVariantsForSale, 
+      productsWithInStockVariants 
+    });
+
   } catch (error) {
     console.error("Error during initial upload:", error.message);
     return NextResponse.json({ message: "Error during initial upload" }, { status: 500 });
