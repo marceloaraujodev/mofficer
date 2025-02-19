@@ -17,7 +17,7 @@ function generateIndexFile(totalPages) {
     sitemapindex: {
       $: { xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9" },
       sitemap: Array.from({ length: totalPages }, (_, i) => ({
-        loc: [`https://${shopName}.com.br/api/google-feed?page=${i + 1}`],
+        loc: [`https://mofficer.vercel.app/api/google-feed?page=${i + 1}`], // my api
       })),
     },
   };
@@ -122,9 +122,8 @@ const fetchProducts = async (page = 1, limit = 10, batchSize = 50) => {
         break; // No more pages available
       }
 
-      // Stop fetching if we have enough products for the requested page
-      const cleanedProducts = cleanProductData(allProducts);
-      if (cleanedProducts.length >= (page * limit)) {
+      // Stop fetching if we have enough raw products for the requested page
+      if (allProducts.length >= (page * limit)) {
         break;
       }
     }
@@ -146,42 +145,54 @@ const fetchProducts = async (page = 1, limit = 10, batchSize = 50) => {
 };
 
 const generateXmlFeed = (products, currentPage, totalPages) => {
+  const escapeXml = (str) => {
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "<")
+      .replace(/>/g, ">")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&apos;");
+  };
+
   const feed = {
     rss: {
       $: {
         version: "2.0",
         "xmlns:g": "http://base.google.com/ns/1.0",
+        "xmlns:atom": "http://www.w3.org/2005/Atom",
       },
       channel: [
         {
           title: [`M.Officer`],
-          link: [`https://mofficer.com.br`],
+          link: [`https://www.mofficer.com.br`], // link to clients url
           description: ["M.Officer"],
-          item: products.map((product) => {
-            const variants =
-              product.variants.length > 0
-                ? product.variants.map((variant) => ({
-                    "g:variant_id": [variant.id],
-                    "g:variant_title": [variant.title],
-                    "g:variant_price": [`${parseFloat(variant.price).toFixed(2)} BRL`],
-                    "g:variant_sku": [variant.sku],
-                    "g:variant_inventory_quantity": [variant.inventory_quantity],
-                    "g:variant_availability": [variant.inventory_quantity > 0 ? "in stock" : "out of stock"],
-                  }))
-                : [];
-            return {
-              "g:id": [product.id],
-              "g:title": [product.title],
-              "g:description": [product.body_html || 'No Description available'],
-              "g:link": [`https://${shopName}.com/products/${product.handle}`],
+         "atom:link": [
+            {
+              $: {
+                href: `https://mofficer.vercel.app/api/google-feed.xml`, // my api url
+                rel: "self",
+                type: "application/rss+xml",
+              },
+            },
+          ],
+          item: products.flatMap((product) =>
+            product.variants.map((variant) => ({
+              title: [escapeXml(product.title || "No Title Available")], // Standard RSS <title>
+              description: [escapeXml(product.body_html || "No Description Available")], // Standard RSS <description>
+              "g:id": [`${product.id}-${variant.id}`],
+              "g:brand": ["M.Officer"],
+              "g:title": [escapeXml(product.title || "No Title Available")],
+              "g:description": [escapeXml(product.body_html || "No Description Available")],
+              "g:link": [`https://${shopName}.com/products/${product.handle}`], // shopify url
               "g:image_link": [product.image ? product.image.src : ""],
               "g:product_type": [product.product_type],
               "g:condition": ["new"],
-              "g:price": [`${parseFloat(product.variants[0]?.price).toFixed(2) || "0.00"} BRL`],
-              "g:availability": [product.variants[0]?.inventory_quantity > 0 ? "in stock" : "out of stock"],
-              ...(variants.length > 0 ? { "g:variants": variants } : {}),
-            };
-          }),
+              "g:price": [`${parseFloat(variant.price).toFixed(2)} BRL`],
+              "g:availability": [variant.inventory_quantity > 0 ? "in stock" : "out of stock"],
+              "g:sku": [variant.sku],
+              "g:quantity": [Math.max(0, variant.inventory_quantity)],
+            }))
+          ),
         },
       ],
     },
@@ -235,12 +246,17 @@ async function fixXmlData(xmlData) {
 const cleanProductData = (products) => {
   return products
     .map((product) => {
-      // Exclude products with no image or inactive status
-      if (!product.image?.src || product.status !== 'active') {
+      // Exclude products without required fields
+      if (
+        !product.title ||
+        !product.body_html ||
+        !product.image?.src ||
+         product.status !== 'active'
+      ) {
         return null;
       }
 
-      // Clean the HTML if present
+      // Clean the HTML content
       if (product.body_html) {
         product.body_html = cleanHtml(product.body_html);
       }
@@ -248,19 +264,31 @@ const cleanProductData = (products) => {
       // Process variants synchronously
       product.variants = product.variants
         .map((variant) => {
-          // Exclude variants without a price or without inventory
-          if (!variant.price) return null;
-          if (!variant.inventory_quantity || variant.inventory_quantity === 0) return null;
+          // Exclude variants without a price, SKU, or valid inventory
+          if (!variant.price || !variant.sku || variant.inventory_quantity < 0) {
+            return null;
+          }
+
+          // Format price properly
+          variant.price = parseFloat(variant.price).toFixed(2);
+
+          // Set availability based on inventory
+          variant.availability = variant.inventory_quantity > 0 ? 'in stock' : 'out of stock';
+
           return variant;
         })
-        .filter((variant) => variant !== null);
+        .filter((variant) => variant !== null); // Filter out invalid variants
 
       // If no valid variants remain, exclude the product
       if (product.variants.length === 0) return null;
 
+      // Add fallback values for missing fields
+      product.brand = product.brand || 'M.Officer';
+      product.condition = product.condition || 'new';
+
       return product;
     })
-    .filter((product) => product !== null);
+    .filter((product) => product !== null); // Filter out invalid products
 };
 
 // Function to clean HTML tags from descriptions
