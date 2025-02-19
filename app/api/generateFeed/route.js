@@ -109,40 +109,44 @@ const fetchProducts = async (limit = 10) => {
       return [];
     }
 
-    // // Filter out products without a valid image URL
-    // const validProducts = allProducts.filter(product => 
-    //   product.image?.src && product.status === 'active'
-    // );
+    // --------- Leave it here in case I need to grab all the products including out of stock and drafts from shopify
+      // Filter out products without a valid image URL
+      const validProducts = allProducts.filter(product => 
+        product.image?.src && product.status === 'active'
+      );
 
 
-    // // this will leave some variants that are out of stock in the xml
-    // // Filter products to include only those with at least one in-stock variant
-    // const inStockProducts = validProducts.filter(product =>
-    //   product.variants.some(variant => variant.inventory_quantity > 0)
-    // );
-
-    // const inStockProducts = validProducts.map(product => console.log(product.variants))
+      // this will leave some variants that are out of stock in the xml
+      // Filter products to include only those with at least one in-stock variant
+      const inStockProducts = validProducts.filter(product =>
+        product.variants.some(variant => variant.inventory_quantity > 0)
+      );
 
     // ------------ only instock products on the xml list
 
-    // Filter out products without a valid image URL
-    const validProducts = allProducts.filter(product => product.image?.src);
+    // // Filter out products without a valid image URL
+    // const validProducts = allProducts.filter(product => product.image?.src);
 
-    // Filter products to include only those with at least one in-stock variant - only items and variants with stock
-    const inStockProducts = validProducts.map(product => {
-      // Filter the variants to include only in-stock ones
-      const inStockVariants = product.variants.filter(variant => variant.inventory_quantity > 0);
+    // // Filter products to include only those with at least one in-stock variant - only items and variants with stock
+    // const inStockProducts = validProducts.map(product => {
+    //   // Filter the variants to include only in-stock ones
+    //   const inStockVariants = product.variants.filter(variant => variant.inventory_quantity > 0);
 
-      // If no in-stock variants remain, exclude the product
-      if (inStockVariants.length === 0) return null;
+    //   // If no in-stock variants remain, exclude the product
+    //   if (inStockVariants.length === 0) return null;
 
-      // Return the product with only in-stock variants
-      return {
-        ...product,
-        variants: inStockVariants,
-      };
-    }).filter(product => product !== null); // Filter out invalid products
-    console.log(inStockProducts.length)
+    //   // Return the product with only in-stock variants
+    //   return {
+    //     ...product,
+    //     variants: inStockVariants,
+    //   };
+    // }).filter(product => product !== null); // Filter out invalid products
+
+    // // this will give you the total number of available products that are active
+      // const totalVariants = inStockProducts.reduce((count, product) => count + (product.variants?.length || 0), 0);
+      // console.log(`Total Variants: ${totalVariants}`);
+    //
+
     return inStockProducts;
   } catch (error) {
     console.error("Error fetching products:", error.message);
