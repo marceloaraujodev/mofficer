@@ -69,7 +69,7 @@ const shopName = 'mofficerbrasil';
 
 const fetchProducts = async (limit = 10) => {
   let allProducts = [];
-  let url = `https://mofficerbrasil.myshopify.com/admin/api/2024-10/products.json?limit=${limit}&published_status=published`;
+  let url = `https://mofficerbrasil.myshopify.com/admin/api/2024-10/products.json?limit=${limit}`;
   let hasNextPage = true;
 
   try {
@@ -110,13 +110,37 @@ const fetchProducts = async (limit = 10) => {
     }
 
     // Filter out products without a valid image URL
-    const validProducts = allProducts.filter(product => product.image?.src);
+    const validProducts = allProducts.filter(product => 
+      product.image?.src && product.status === 'active'
+    );
 
+
+    // this will leave some variants that are out of stock in the xml
     // Filter products to include only those with at least one in-stock variant
     const inStockProducts = validProducts.filter(product =>
       product.variants.some(variant => variant.inventory_quantity > 0)
     );
 
+    // const inStockProducts = validProducts.map(product => console.log(product.variants))
+
+    // // Filter out products without a valid image URL
+    // const validProducts = allProducts.filter(product => product.image?.src);
+
+    // // Filter products to include only those with at least one in-stock variant - only items and variants with stock
+    // const inStockProducts = validProducts.map(product => {
+    //   // Filter the variants to include only in-stock ones
+    //   const inStockVariants = product.variants.filter(variant => variant.inventory_quantity > 0);
+
+    //   // If no in-stock variants remain, exclude the product
+    //   if (inStockVariants.length === 0) return null;
+
+    //   // Return the product with only in-stock variants
+    //   return {
+    //     ...product,
+    //     variants: inStockVariants,
+    //   };
+    // }).filter(product => product !== null); // Filter out invalid products
+    // console.log(inStockProducts.length)
     return inStockProducts;
   } catch (error) {
     console.error("Error fetching products:", error.message);
@@ -135,6 +159,11 @@ const generateXmlFeed = (products) => {
       .replace(/'/g, "&apos;");
   };
 
+  function toSentenceCase(str) {
+    if (!str) return ""; // Handle empty or null strings
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  }
+
   const feed = {
     rss: {
       $: {
@@ -145,23 +174,23 @@ const generateXmlFeed = (products) => {
       channel: [
         {
           title: ["M.Officer Product Feed"],
-          link: [`https://www.mofficer.com.br`],
           description: ["M.Officer Product Feed"],
+          link: [`https://www.mofficer.com.br`],
           item: products.flatMap((product) =>
             product.variants.map((variant) => ({
-              title: escapeXml(product.title || "No Title Available"), // Standard RSS <title>
-              description: escapeXml(product.body_html || "No Description Available"), // Standard RSS <description>
-              link: `https://${process.env.SHOP_NAME}.com/products/${product.handle}`, // Standard RSS <link>
               "g:id": `${product.id}-${variant.id}`, // Unique ID for the variant
-              "g:title": escapeXml(product.title || "No Title Available"),
-              "g:description": escapeXml(product.body_html || "No Description Available"),
+              "g:title": escapeXml(toSentenceCase(product.title || "No Title Available")),
+              title: escapeXml(toSentenceCase(product.title || "No Title Available")), // Standard RSS <title>
+              description: escapeXml(product.body_html || "No Description Available"), // Standard RSS <description>
+              link: `https://www.mofficer.com.br/products/${product.handle}`, // Standard RSS <link>
+              "g:price": `${parseFloat(variant.price).toFixed(2)} BRL`,
+              "g:condition": "new",
+              "g:availability": variant.inventory_quantity > 0 ? "in stock" : "out of stock", // 
               // "g:link": `https://${shopName}.com/products/${product.handle}`,
               "g:image_link": product.image?.src || "",
-              "g:price": `${parseFloat(variant.price).toFixed(2)} BRL`,
-              "g:availability": variant.inventory_quantity > 0 ? "in stock" : "out of stock",
+              "g:google_product_category": variant.category,
               "g:sku": variant.sku,
               "g:brand": "M.Officer",
-              "g:condition": "new",
               "g:product_type": product.product_type || "Uncategorized",
               "g:identifier_exists": "FALSE",
             }))
@@ -173,23 +202,6 @@ const generateXmlFeed = (products) => {
   const builder = new xml2js.Builder();
   return builder.buildObject(feed);
 
-  // item: products.flatMap((product) =>
-  //   product.variants.map((variant) => ({
-  //     title: [escapeXml(product.title || "No Title Available")], // Standard RSS <title>
-  //     description: [escapeXml(product.body_html || "No Description Available")], // Standard RSS <description>
-  //     "g:id": [`${product.id}-${variant.id}`],
-  //     "g:brand": ["M.Officer"],
-  //     "g:title": [escapeXml(product.title || "No Title Available")],
-  //     "g:description": [escapeXml(product.body_html || "No Description Available")],
-  //     "g:link": [`https://${shopName}.com/products/${product.handle}`], // shopify url
-  //     "g:image_link": [product.image ? product.image.src : ""],
-  //     "g:product_type": [product.product_type],
-  //     "g:condition": ["new"],
-  //     "g:price": [`${parseFloat(variant.price).toFixed(2)} BRL`],
-  //     "g:availability": [variant.inventory_quantity > 0 ? "in stock" : "out of stock"],
-  //     "g:sku": [variant.sku],
-  //     "g:quantity": [Math.max(0, variant.inventory_quantity)],
-  //   }))
 };
 
 const cleanProductData = (products) => {
@@ -283,6 +295,8 @@ async function fixXmlData(xmlData) {
         });
       }
 
+     
+
     const builder = new xml2js.Builder();
     return builder.buildObject(result);
   } catch (err) {
@@ -291,14 +305,17 @@ async function fixXmlData(xmlData) {
   }
 }
 
-
-
 export async function GET(request) {
-  const limit = parseInt(request.nextUrl.searchParams.get('limit')) || 2; // Default 
+  const limit = parseInt(request.nextUrl.searchParams.get('limit')) || 10; // Default 
+  console.log(limit)
   try {
   //  const feed = await createXmlFeed();
 
   const products = await fetchProducts(limit);
+  // products.map(product => console.log(product))
+  // const activeProducts = products.map(product => product.variants.filter(variant => variant.inventory_quantity > 0));
+  // const totalProducts = activeProducts.length;
+  // return NextResponse.json({activeProducts, totalProducts})
 
   const cleanedProducts = await cleanProductData(products);
 

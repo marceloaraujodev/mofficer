@@ -51,6 +51,7 @@ export async function GET(request) {
 
     // Fetch paginated products
     const products = await fetchProducts(page, limit);
+    console.log(products)
     if (products.length === 0) {
       return NextResponse.json({ message: "No products found" }, { status: 404 });
     }
