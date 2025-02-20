@@ -159,51 +159,60 @@ const generateXmlFeed = (products) => {
 };
 
 const cleanProductData = (products) => {
-  return products
-    .map((product) => {
-      // Exclude products without required fields
-      if (
-        !product.title ||
-        !product.body_html ||
-        !product.image?.src ||
-         product.status !== 'active'
-      ) {
-        return null;
-      }
+  console.log(products)
 
-      // Clean the HTML content
-      if (product.body_html) {
-        product.body_html = cleanHtml(product.body_html);
-      }
+  // make sure all the main fields exists for each product
 
-      // Process variants synchronously
-      product.variants = product.variants
-        .map((variant) => {
-          // Exclude variants without a price, SKU, or valid inventory
-          if (!variant.price || !variant.sku || variant.inventory_quantity < 0) {
-            return null;
-          }
+  return products.map(product => {
+    const newProduct = {
+      id: product.id,
+      availability: product.availability,
+      title: product.title,
+      description: cleanHtml(product.description),
+      imageLink: product.imageLink,
+      link: product.link,
+      variants: product.variants.filter(variant => (variant.inventory_quantity > 0))
+    }
+    return newProduct
+  })
 
-          // Format price properly
-          variant.price = parseFloat(variant.price).toFixed(2);
 
-          // Set availability based on inventory
-          variant.availability = variant.inventory_quantity > 0 ? 'in stock' : 'out of stock';
 
-          return variant;
-        })
-        .filter((variant) => variant !== null); // Filter out invalid variants
+  // return products
+  //   .map((product) => {
+  //     // Exclude products without required fields
+  //     if (
+  //       !product.title ||
+  //       !product.body_html ||
+  //       !product.image?.src ||
+  //        product.status !== 'active'
+  //     ) {
+  //       return null;
+  //     }
 
-      // If no valid variants remain, exclude the product
-      if (product.variants.length === 0) return null;
+  //     // // Process variants synchronously
+  //     // product.variants = product.variants
+  //     //   .map((variant) => {
+  //     //     // Exclude variants without a price, SKU, or valid inventory
+  //     //     if (!variant.price || !variant.sku || variant.inventory_quantity < 0) {
+  //     //       return null;
+  //     //     }
 
-      // Add fallback values for missing fields
-      product.brand = product.brand || 'M.Officer';
-      product.condition = product.condition || 'new';
+  //     //     // Format price properly
+  //     //     variant.price = parseFloat(variant.price).toFixed(2);
 
-      return product;
-    })
-    .filter((product) => product !== null); // Filter out invalid products
+  //     //     return variant;
+  //     //   })
+  //     //   .filter((variant) => variant !== null); // Filter out invalid variants
+
+
+  //     // // Add fallback values for missing fields
+  //     // product.brand = product.brand || 'M.Officer';
+  //     // product.condition = product.condition || 'new';
+
+  //     return product;
+  //   })
+  //   .filter((product) => product !== null); // Filter out invalid products
 };
 // Function to clean HTML tags from descriptions
 function cleanHtml(rawHtml) {
@@ -264,29 +273,30 @@ export async function GET() {
   await mongooseConnect()
 
   // Retrieve all products from the database
-  const products = await Product.find();
+  const products = await Product.find().limit(2);
   if (!products || products.length === 0) {
     return NextResponse.json({ message: "No products found" }, { status: 404 });
   }
 
+  
+  const cleanedProducts = cleanProductData(products);
+  return NextResponse.json({message: 'success', cleanedProducts})
 
-  const cleanedProducts = await cleanProductData(products);
+  // // Generate the XML string from cleaned product data
+  // const xmlFeed = generateXmlFeed(cleanedProducts);
 
-  // Generate the XML string from cleaned product data
-  const xmlFeed = generateXmlFeed(cleanedProducts);
+  // // Fix the XML data (e.g., handle missing or malformed image links)
+  // const feed = await fixXmlData(xmlFeed);
 
-  // Fix the XML data (e.g., handle missing or malformed image links)
-  const feed = await fixXmlData(xmlFeed);
+  //   if (!feed) {
+  //     // Handle the case where no feed was generated
+  //     return NextResponse.json({ message: 'No feed generated' }, { status: 404 });
+  //   }
 
-    if (!feed) {
-      // Handle the case where no feed was generated
-      return NextResponse.json({ message: 'No feed generated' }, { status: 404 });
-    }
-
-    // Return the generated XML feed
-    return new NextResponse(feed, {
-      headers: { 'Content-Type': 'application/xml' },
-    });
+  //   // Return the generated XML feed
+  //   return new NextResponse(feed, {
+  //     headers: { 'Content-Type': 'application/xml' },
+  //   });
 
   } catch (error) {
     console.error('Error generating feed:', error);
