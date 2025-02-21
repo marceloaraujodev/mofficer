@@ -1,0 +1,436 @@
+
+
+{
+ID [id] 				// required
+Title [title]			// required
+Description [description]			// required
+Link [link]				// required
+Image link [image_link]			// required main image
+Availability [availability]
+Availability date [availability_date]
+Brand [brand]
+GTIN [gtin]
+Price [price]
+Age group [age_group] 			required in brazil
+Size [size] 				required for appearl
+body_html	
+vendor
+product_type
+created_at
+handle
+updated_at
+published_at
+template_suffix
+pubished_scope
+tags
+status
+admin_graphql_api_id
+variants
+options
+images
+image
+}
+
+
+OBJECT STRUCTURE FROM EACH PRODUCT FROM SHOPIFY
+{
+  id: 6945980907635,
+  title: 'VESTIDO OMBRO ÚNICO',
+  body_html: '<div id="accordion">\n' +
+    '<div class="card">\n' +
+    '<div class="card-header" id="headingTwo">\n' +
+    '<h5 class="mb-0"><button class="btn btn-link" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo"> Dicas de Estilo </button></h5>\n' +
+    '</div>\n' +
+    '<div id="collapseTwo" class="collapse in show" aria-labelledby="headingTwo" data-parent="#accordion">\n' +
+    '<div class="card-body">Vestido super sexy, com modelagem justa ao corpo. Combina com salto e acessórios podem trazer estilo ao look</div>\n' +
+    '<div class="card-body"> </div>\n' +
+    '</div>\n' +
+    '</div>\n' +
+    '<div class="card">\n' +
+    '<div class="card-header" id="headingOne">\n' +
+    '<h5 class="mb-0"><button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"> Descrição </button></h5>\n' +
+    '</div>\n' +
+    '<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">\n' +
+    '<div class="card-body description-text">Vestido com manga longa única, nas cores azul, fúcsia e preto</div>\n' +
+    '<div class="card-body description-text"> </div>\n' +
+    '</div>\n' +
+    '</div>\n' +
+    '<div class="card">\n' +
+    '<div class="card-header" id="headingThree">\n' +
+    '<h5 class="mb-0"><button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree"> Composição </button></h5>\n' +
+    '</div>\n' +
+    '<div id="collapseThree" class="collapse show" aria-labelledby="headingThree" data-parent="#accordion">\n' +
+    '<div class="card-body">94% VISCOSE 6% ELASTANO</div>\n' +
+    '<div class="card-body" style="text-align: start;"><br></div>\n' +
+    '</div>\n' +
+    '</div>\n' +
+    '<div class="amazon-description" style="display: none;">\n' +
+    '<p><b>Dicas de Estilo:</b> Vestido super sexy, com modelagem justa ao corpo. Combina com salto e acessórios podem trazer estilo ao look.</p>\n' +
+    '<p><b>Descrição:</b>Vestido com manga longa única, nas cores azul, fúcsia e preto.</p>\n' +
+    '<p><b>Composiçaõ:</b>94%VISCOSE 6%ELASTANO</p>\n' +
+    '</div>\n' +
+    '</div>',
+  vendor: 'M.Officer',
+  product_type: 'VESTIDOS',
+  created_at: '2022-08-17T18:11:00-03:00',
+  handle: 'vestido-ombro-unico',
+  updated_at: '2024-12-09T04:09:11-03:00',
+  published_at: '2022-08-11T00:00:00-03:00',
+  template_suffix: null,
+  published_scope: 'web',
+  tags: 'amz-feminino, amzcat-Clothing, amzcor-black_11902201350001, amzcor-black_11902201350002, amzcor-black_11902201350003, amzcor-blue_119022013108101, amzcor-blue_119022013108102, amzcor-blue_119022013108103, amzcor-purple_11902201320201, amzcor-purple_11902201320202, amzcor-purple_11902201320203, amzrbn-17681969011, amzrbn-17681988011, amzsubcat-Dress, amztamanho-1_119022013108101, amztamanho-1_11902201320201, amztamanho-1_11902201350001, amztamanho-2_119022013108102, amztamanho-2_11902201320202, amztamanho-2_11902201350002, amztamanho-3_119022013108103, amztamanho-3_11902201320203, amztamanho-3_11902201350003, Azul, colecao-90 M.O, grupo-VESTIDOS, linha-MALHARIA FASHION, Preto, Roxo, sexo-FEMININO, SSG-FEMININO-VESTIDO CURTO, SSG-FEMININO-VESTIDO JUSTO - CURTO, subgrupo-VESTIDO CURTO, subgrupo-VESTIDO CURTO LISO, subgrupo-VESTIDO JUSTO - CURTO',
+  status: 'active',
+  admin_graphql_api_id: 'gid://shopify/Product/6945980907635',
+  variants: [
+    {
+      id: 40508636561523,
+      product_id: 6945980907635,
+      title: '01 / AZUL BIC',
+      price: '259.90',
+      position: 1,
+      inventory_policy: 'deny',
+      compare_at_price: '559.90',
+      option1: '01',
+      option2: 'AZUL BIC',
+      option3: null,
+      created_at: '2022-10-12T01:10:34-03:00',
+      updated_at: '2024-12-09T04:09:11-03:00',
+      taxable: false,
+      barcode: null,
+      fulfillment_service: 'manual',
+      grams: 200,
+      inventory_management: 'shopify',
+      requires_shipping: true,
+      sku: '119022013108101',
+      weight: 0.2,
+      weight_unit: 'kg',
+      inventory_item_id: 42615471964275,
+      inventory_quantity: 1,
+      old_inventory_quantity: 1,
+      admin_graphql_api_id: 'gid://shopify/ProductVariant/40508636561523',
+      image_id: 33927848067187
+    },
+    {
+      id: 40508636594291,
+      product_id: 6945980907635,
+      title: '02 / AZUL BIC',
+      price: '259.90',
+      position: 2,
+      inventory_policy: 'deny',
+      compare_at_price: '559.90',
+      option1: '02',
+      option2: 'AZUL BIC',
+      option3: null,
+      created_at: '2022-10-12T01:10:34-03:00',
+      updated_at: '2024-12-09T04:09:11-03:00',
+      taxable: false,
+      barcode: null,
+      fulfillment_service: 'manual',
+      grams: 200,
+      inventory_management: 'shopify',
+      requires_shipping: true,
+      sku: '119022013108102',
+      weight: 0.2,
+      weight_unit: 'kg',
+      inventory_item_id: 42615471997043,
+      inventory_quantity: 2,
+      old_inventory_quantity: 2,
+      admin_graphql_api_id: 'gid://shopify/ProductVariant/40508636594291',
+      image_id: 33927848067187
+    },
+    {
+      id: 40508636627059,
+      product_id: 6945980907635,
+      title: '03 / AZUL BIC',
+      price: '259.90',
+      position: 3,
+      inventory_policy: 'deny',
+      compare_at_price: '559.90',
+      option1: '03',
+      option2: 'AZUL BIC',
+      option3: null,
+      created_at: '2022-10-12T01:10:34-03:00',
+      updated_at: '2024-12-09T04:09:11-03:00',
+      taxable: false,
+      barcode: null,
+      fulfillment_service: 'manual',
+      grams: 200,
+      inventory_management: 'shopify',
+      requires_shipping: true,
+      sku: '119022013108103',
+      weight: 0.2,
+      weight_unit: 'kg',
+      inventory_item_id: 42615472029811,
+      inventory_quantity: 1,
+      old_inventory_quantity: 1,
+      admin_graphql_api_id: 'gid://shopify/ProductVariant/40508636627059',
+      image_id: 33927848067187
+    },
+    {
+      id: 40508636659827,
+      product_id: 6945980907635,
+      title: '01 / FUCSIA',
+      price: '259.90',
+      position: 4,
+      inventory_policy: 'deny',
+      compare_at_price: '559.90',
+      option1: '01',
+      option2: 'FUCSIA',
+      option3: null,
+      created_at: '2022-10-12T01:10:34-03:00',
+      updated_at: '2024-12-09T04:09:11-03:00',
+      taxable: false,
+      barcode: null,
+      fulfillment_service: 'manual',
+      grams: 200,
+      inventory_management: 'shopify',
+      requires_shipping: true,
+      sku: '11902201320201',
+      weight: 0.2,
+      weight_unit: 'kg',
+      inventory_item_id: 42615472062579,
+      inventory_quantity: 0,
+      old_inventory_quantity: 0,
+      admin_graphql_api_id: 'gid://shopify/ProductVariant/40508636659827',
+      image_id: 31207754301555
+    },
+    {
+      id: 40508636692595,
+      product_id: 6945980907635,
+      title: '02 / FUCSIA',
+      price: '259.90',
+      position: 5,
+      inventory_policy: 'deny',
+      compare_at_price: '559.90',
+      option1: '02',
+      option2: 'FUCSIA',
+      option3: null,
+      created_at: '2022-10-12T01:10:34-03:00',
+      updated_at: '2024-12-09T04:09:11-03:00',
+      taxable: false,
+      barcode: null,
+      fulfillment_service: 'manual',
+      grams: 200,
+      inventory_management: 'shopify',
+      requires_shipping: true,
+      sku: '11902201320202',
+      weight: 0.2,
+      weight_unit: 'kg',
+      inventory_item_id: 42615472095347,
+      inventory_quantity: 0,
+      old_inventory_quantity: 0,
+      admin_graphql_api_id: 'gid://shopify/ProductVariant/40508636692595',
+      image_id: 31207754301555
+    },
+    {
+      id: 40508636725363,
+      product_id: 6945980907635,
+      title: '03 / FUCSIA',
+      price: '259.90',
+      position: 6,
+      inventory_policy: 'deny',
+      compare_at_price: '559.90',
+      option1: '03',
+      option2: 'FUCSIA',
+      option3: null,
+      created_at: '2022-10-12T01:10:34-03:00',
+      updated_at: '2024-12-09T04:09:11-03:00',
+      taxable: false,
+      barcode: null,
+      fulfillment_service: 'manual',
+      grams: 200,
+      inventory_management: 'shopify',
+      requires_shipping: true,
+      sku: '11902201320203',
+      weight: 0.2,
+      weight_unit: 'kg',
+      inventory_item_id: 42615472128115,
+      inventory_quantity: 0,
+      old_inventory_quantity: 0,
+      admin_graphql_api_id: 'gid://shopify/ProductVariant/40508636725363',
+      image_id: 31207754301555
+    },
+    {
+      id: 40508636758131,
+      product_id: 6945980907635,
+      title: '01 / PRETO',
+      price: '259.90',
+      position: 7,
+      inventory_policy: 'deny',
+      compare_at_price: '559.90',
+      option1: '01',
+      option2: 'PRETO',
+      option3: null,
+      created_at: '2022-10-12T01:10:34-03:00',
+      updated_at: '2024-12-09T04:09:11-03:00',
+      taxable: false,
+      barcode: null,
+      fulfillment_service: 'manual',
+      grams: 200,
+      inventory_management: 'shopify',
+      requires_shipping: true,
+      sku: '11902201350001',
+      weight: 0.2,
+      weight_unit: 'kg',
+      inventory_item_id: 42615472160883,
+      inventory_quantity: 0,
+      old_inventory_quantity: 0,
+      admin_graphql_api_id: 'gid://shopify/ProductVariant/40508636758131',
+      image_id: null
+    },
+    {
+      id: 40508636790899,
+      product_id: 6945980907635,
+      title: '02 / PRETO',
+      price: '259.90',
+      position: 8,
+      inventory_policy: 'deny',
+      compare_at_price: '559.90',
+      option1: '02',
+      option2: 'PRETO',
+      option3: null,
+      created_at: '2022-10-12T01:10:34-03:00',
+      updated_at: '2024-12-09T04:09:11-03:00',
+      taxable: false,
+      barcode: null,
+      fulfillment_service: 'manual',
+      grams: 200,
+      inventory_management: 'shopify',
+      requires_shipping: true,
+      sku: '11902201350002',
+      weight: 0.2,
+      weight_unit: 'kg',
+      inventory_item_id: 42615472193651,
+      inventory_quantity: 0,
+      old_inventory_quantity: 0,
+      admin_graphql_api_id: 'gid://shopify/ProductVariant/40508636790899',
+      image_id: null
+    },
+    {
+      id: 40508636823667,
+      product_id: 6945980907635,
+      title: '03 / PRETO',
+      price: '259.90',
+      position: 9,
+      inventory_policy: 'deny',
+      compare_at_price: '559.90',
+      option1: '03',
+      option2: 'PRETO',
+      option3: null,
+      created_at: '2022-10-12T01:10:34-03:00',
+      updated_at: '2024-12-09T04:09:11-03:00',
+      taxable: false,
+      barcode: null,
+      fulfillment_service: 'manual',
+      grams: 200,
+      inventory_management: 'shopify',
+      requires_shipping: true,
+      sku: '11902201350003',
+      weight: 0.2,
+      weight_unit: 'kg',
+      inventory_item_id: 42615472226419,
+      inventory_quantity: 0,
+      old_inventory_quantity: 0,
+      admin_graphql_api_id: 'gid://shopify/ProductVariant/40508636823667',
+      image_id: null
+    }
+  ],
+  options: [
+    {
+      id: 8918599237747,
+      product_id: 6945980907635,
+      name: 'Tamanho',
+      position: 1,
+      values: [Array]
+    },
+    {
+      id: 8918599270515,
+      product_id: 6945980907635,
+      name: 'Cor',
+      position: 2,
+      values: [Array]
+    }
+  ],
+  images: [
+    {
+      id: 33927848067187,
+      alt: null,
+      position: 1,
+      product_id: 6945980907635,
+      created_at: '2024-04-01T14:40:07-03:00',
+      updated_at: '2024-04-01T14:42:11-03:00',
+      admin_graphql_api_id: 'gid://shopify/ProductImage/33927848067187',
+      width: 1920,
+      height: 2880,
+      src: 'https://cdn.shopify.com/s/files/1/0015/4219/3267/files/8_7982068f-e711-4fd2-b4ef-3ce2b9d6e06c.png?v=1711993331',
+      variant_ids: [Array]
+    },
+    {
+      id: 31207754301555,
+      alt: 'VESTIDO OMBRO ÚNICO - M.Officer',
+      position: 2,
+      product_id: 6945980907635,
+      created_at: '2022-11-20T01:14:54-03:00',
+      updated_at: '2024-04-01T14:40:57-03:00',
+      admin_graphql_api_id: 'gid://shopify/ProductImage/31207754301555',
+      width: 1365,
+      height: 2048,
+      src: 'https://cdn.shopify.com/s/files/1/0015/4219/3267/products/vestido-ombro-unico-359913.jpg?v=1711993257',
+      variant_ids: [Array]
+    },
+    {
+      id: 33927851704435,
+      alt: null,
+      position: 3,
+      product_id: 6945980907635,
+      created_at: '2024-04-01T14:40:53-03:00',
+      updated_at: '2024-04-01T14:40:57-03:00',
+      admin_graphql_api_id: 'gid://shopify/ProductImage/33927851704435',
+      width: 1920,
+      height: 2880,
+      src: 'https://cdn.shopify.com/s/files/1/0015/4219/3267/files/M.OFFICER_6279.jpg?v=1711993257',
+      variant_ids: []
+    },
+    {
+      id: 31207754334323,
+      alt: 'VESTIDO OMBRO ÚNICO - M.Officer',
+      position: 4,
+      product_id: 6945980907635,
+      created_at: '2022-11-20T01:14:54-03:00',
+      updated_at: '2024-04-01T14:40:55-03:00',
+      admin_graphql_api_id: 'gid://shopify/ProductImage/31207754334323',
+      width: 1365,
+      height: 2048,
+      src: 'https://cdn.shopify.com/s/files/1/0015/4219/3267/products/vestido-ombro-unico-861541.jpg?v=1711993255',
+      variant_ids: []
+    },
+    {
+      id: 31207754367091,
+      alt: 'VESTIDO OMBRO ÚNICO - M.Officer',
+      position: 5,
+      product_id: 6945980907635,
+      created_at: '2022-11-20T01:14:54-03:00',
+      updated_at: '2024-04-01T14:40:55-03:00',
+      admin_graphql_api_id: 'gid://shopify/ProductImage/31207754367091',
+      width: 1365,
+      height: 2048,
+      src: 'https://cdn.shopify.com/s/files/1/0015/4219/3267/products/vestido-ombro-unico-761423.jpg?v=1711993255',
+      variant_ids: []
+    }
+  ],
+  image: {
+    id: 33927848067187,
+    alt: null,
+    position: 1,
+    product_id: 6945980907635,
+    created_at: '2024-04-01T14:40:07-03:00',
+    updated_at: '2024-04-01T14:42:11-03:00',
+    admin_graphql_api_id: 'gid://shopify/ProductImage/33927848067187',
+    width: 1920,
+    height: 2880,
+    src: 'https://cdn.shopify.com/s/files/1/0015/4219/3267/files/8_7982068f-e711-4fd2-b4ef-3ce2b9d6e06c.png?v=1711993331',
+    variant_ids: [ 40508636561523, 40508636594291, 40508636627059 ]
+  }
+}
+
+
